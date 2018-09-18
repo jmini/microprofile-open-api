@@ -282,10 +282,11 @@ public interface Operation extends Constructible, Extensible<Operation> {
     /**
      * Adds the given callback item to this Operation's list of callbacks.
      *
+     * @param key a key conforming to the format required for this object
      * @param callback a callback that is applicable for this operation
      * @return the current Operation object
      **/
-    Operation addCallback(Callback callback);
+    Operation addCallback(String key, Callback callback);
 
     /**
      * Returns the deprecated property from an Operation instance.
