@@ -757,7 +757,10 @@ public interface Schema extends Extensible<Schema>, Constructible, Reference<Sch
      * @param additionalProperties a Schema which defines additional properties
      * @return the current Schema instance
      */
-    Schema additionalPropertiesSchema(Schema additionalProperties);
+    default Schema additionalPropertiesSchema(Schema additionalProperties) {
+        setAdditionalPropertiesSchema(additionalProperties);
+        return this;
+    }
 
     /**
      * Sets the value of "additionalProperties" to either True or False.  See the javadoc for 
@@ -781,7 +784,10 @@ public interface Schema extends Extensible<Schema>, Constructible, Reference<Sch
      * @param additionalProperties a Schema which defines additional properties
      * @return the current Schema instance
      */
-    Schema additionalPropertiesBoolean(Boolean additionalProperties);
+    default Schema additionalPropertiesBoolean(Boolean additionalProperties) {
+        setAdditionalPropertiesBoolean(additionalProperties);
+        return this;
+    }
 
     /**
      * Returns a description of the purpose of this Schema.
