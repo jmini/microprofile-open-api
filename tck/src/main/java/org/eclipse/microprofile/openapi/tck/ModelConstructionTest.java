@@ -17,6 +17,7 @@
 package org.eclipse.microprofile.openapi.tck;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNotSame;
 import static org.testng.Assert.assertNull;
@@ -260,6 +261,11 @@ public class ModelConstructionTest {
         assertEquals(o.getTags().size(), 1, "The list is expected to contain one entry.");
         o.removeTag(tag);
         assertEquals(o.getTags().size(), 0, "The list is expected to be empty.");
+        
+        final String callbackKey = "myCallback";
+        final Callback callbackValue = createConstructibleInstance(Callback.class);
+        checkSameObject(o, o.addCallback(callbackKey, callbackValue));
+        checkMapEntry(o.getCallbacks(), callbackKey, callbackValue);
     }
     
     @Test
@@ -326,17 +332,38 @@ public class ModelConstructionTest {
     public void pathsTest() {
         final Paths p = processConstructible(Paths.class);
         
-        final String pathItemKey = "myPathItem";
+        final String pathItemKey = "/myPathItem";
+        assertFalse(p.hasPathItem(pathItemKey), pathItemKey + " is absent in the map");
         final PathItem pathItemValue = createConstructibleInstance(PathItem.class);
         checkSameObject(p, p.addPathItem(pathItemKey, pathItemValue));
+        assertTrue(p.hasPathItem(pathItemKey), pathItemKey + " is present in the map");
+        assertSame(p.getPathItem(pathItemKey), pathItemValue, 
+                "The value associated with the key: " + pathItemKey + " is expected to be the same one that was added.");
         checkMapEntry(p, pathItemKey, pathItemValue);
+        checkMapEntry(p.getPathItems(), pathItemKey, pathItemValue);
         
-        final String pathItemKey2 = "myPathItem2";
+        final String pathItemKey2 = "/myPathItem2";
+        assertFalse(p.hasPathItem(pathItemKey2), pathItemKey2 + " is absent in the map");
         final PathItem pathItemValue2 = createConstructibleInstance(PathItem.class);
         assertNull(p.put(pathItemKey2, pathItemValue2), "No previous mapping expected.");
+        assertTrue(p.hasPathItem(pathItemKey2), pathItemKey2 + " is present in the map");
+        assertSame(p.getPathItem(pathItemKey2), pathItemValue2, 
+                "The value associated with the key: " + pathItemKey2 + " is expected to be the same one that was added.");
         checkMapEntry(p, pathItemKey2, pathItemValue2);
+        checkMapEntry(p.getPathItems(), pathItemKey2, pathItemValue2);
         
         assertEquals(p.size(), 2, "The map is expected to contain two entries.");
+        assertEquals(p.getPathItems().size(), 2, "The map is expected to contain two entries.");
+        
+        p.removePathItem(pathItemKey);
+        assertFalse(p.hasPathItem(pathItemKey), pathItemKey + " is absent in the map");
+        assertEquals(p.size(), 1, "The map is expected to contain two entries.");
+        assertEquals(p.getPathItems().size(), 1, "The map is expected to contain two entries.");
+        
+        p.remove(pathItemKey2);
+        assertFalse(p.hasPathItem(pathItemKey2), pathItemKey + " is absent in the map");
+        assertEquals(p.size(), 0, "The map is expected to contain 0 entries.");
+        assertEquals(p.getPathItems().size(), 0, "The map is expected to contain 0 entries.");
     }
     
     @Test
@@ -666,7 +693,7 @@ public class ModelConstructionTest {
     private <T extends Constructible> T processConstructible(Class<T> clazz) {
         final T o = createConstructibleInstance(clazz);
         if (o instanceof Extensible && Extensible.class.isAssignableFrom(clazz)) {
-            processExtensible((Extensible) o);
+            processExtensible((Extensible<?>) o);
         }
         if (o instanceof Reference && Reference.class.isAssignableFrom(clazz)) {
             processReference((Reference<?>) o);
@@ -690,7 +717,7 @@ public class ModelConstructionTest {
         return o1;
     }
     
-    private void processExtensible(Extensible e) {
+    private void processExtensible(Extensible<?> e) {
         final String extensionName1 = "x-" + e.getClass().getName() + "-1";
         final Object obj1 = new Object();
         final String extensionName2 = "x-" + e.getClass().getName() + "-2";
@@ -712,6 +739,13 @@ public class ModelConstructionTest {
         final Map<String, Object> map2 = e.getExtensions();
         assertEquals(map2.size(), 0, "The extensions map is expected to contain no entries.");
         assertSame(map2, newMap, "The return value of getExtensions() is expected to be the same value that was set.");
+        // Check that the extension map can be replaced with the builder method and that it is returned by the getter.
+        final Map<String, Object> newOtherMap = new HashMap<>();
+        newOtherMap.put("x-test", 42);
+        e.setExtensions(newOtherMap);
+        final Map<String, Object> map3 = e.getExtensions();
+        assertEquals(map3.size(), 1, "The extensions map is expected to contain one entry.");
+        assertSame(map3, newOtherMap, "The return value of getExtensions() is expected to be the same value that was set.");
     }
     
     private void processReference(Reference<?> r) {
