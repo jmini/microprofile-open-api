@@ -68,7 +68,11 @@ public interface Paths extends Constructible, Extensible<Paths>, Map<String, Pat
      * @return a boolean to indicate if the path item is present or not.
      */
     default boolean hasPathItem(String name) {
-        return getPathItems().containsKey(name);
+        Map<String, PathItem> map = getPathItems();
+        if (map == null) {
+            return false;
+        }
+        return map.containsKey(name);
     }
 
     /**
@@ -78,7 +82,11 @@ public interface Paths extends Constructible, Extensible<Paths>, Map<String, Pat
      * @return the corresponding path item or null.
      */
     default PathItem getPathItem(String name) {
-        return getPathItems().get(name);
+        Map<String, PathItem> map = getPathItems();
+        if (map == null) {
+            return null;
+        }
+        return map.get(name);
     }
 
     /**

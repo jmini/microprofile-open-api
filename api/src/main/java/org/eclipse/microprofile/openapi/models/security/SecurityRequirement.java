@@ -88,7 +88,11 @@ public interface SecurityRequirement extends Constructible, Map<String, List<Str
      * @return a boolean to indicate if the scheme is present or not.
      */
     default boolean hasScheme(String securitySchemeName) {
-        return getSchemes().containsKey(securitySchemeName);
+        Map<String, List<String>> map = getSchemes();
+        if (map == null) {
+            return false;
+        }
+        return map.containsKey(securitySchemeName);
     }
 
     /**
@@ -98,7 +102,11 @@ public interface SecurityRequirement extends Constructible, Map<String, List<Str
      * @return the corresponding path item or null.
      */
     default List<String> getScheme(String securitySchemeName) {
-        return getSchemes().get(securitySchemeName);
+        Map<String, List<String>> map = getSchemes();
+        if (map == null) {
+            return null;
+        }
+        return map.get(securitySchemeName);
     }
 
     /**

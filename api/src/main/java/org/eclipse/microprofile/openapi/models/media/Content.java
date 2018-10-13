@@ -67,7 +67,11 @@ public interface Content extends Constructible, Map<String, MediaType> {
      * @return a boolean to indicate if the media type is present or not.
      */
     default boolean hasMediaType(String name) {
-        return getMediaTypes().containsKey(name);
+        Map<String, MediaType> map = getMediaTypes();
+        if (map == null) {
+            return false;
+        }
+        return map.containsKey(name);
     }
 
     /**
@@ -77,7 +81,11 @@ public interface Content extends Constructible, Map<String, MediaType> {
      * @return the corresponding media type or null.
      */
     default MediaType getMediaType(String name) {
-        return getMediaTypes().get(name);
+        Map<String, MediaType> map = getMediaTypes();
+        if (map == null) {
+            return null;
+        }
+        return map.get(name);
     }
 
     /**
