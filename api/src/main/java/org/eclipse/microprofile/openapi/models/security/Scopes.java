@@ -67,7 +67,11 @@ public interface Scopes extends Constructible, Extensible<Scopes>, Map<String, S
      * @return a boolean to indicate if the scope item is present or not.
      */
     default boolean hasScope(String scope) {
-        return getScopes().containsKey(scope);
+        Map<String, String> map = getScopes();
+        if (map == null) {
+            return false;
+        }
+        return map.containsKey(scope);
     }
 
     /**
@@ -77,7 +81,11 @@ public interface Scopes extends Constructible, Extensible<Scopes>, Map<String, S
      * @return the corresponding description or null.
      */
     default String getScope(String scope) {
-        return getScopes().get(scope);
+        Map<String, String> map = getScopes();
+        if (map == null) {
+            return null;
+        }
+        return map.get(scope);
     }
 
     /**

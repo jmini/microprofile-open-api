@@ -83,7 +83,11 @@ public interface APIResponses extends Constructible, Extensible<APIResponses>, M
      * @return a boolean to indicate if the APIResponse is present or not.
      */
     default boolean hasAPIResponse(String name) {
-        return getAPIResponses().containsKey(name);
+        Map<String, APIResponse> map = getAPIResponses();
+        if (map == null) {
+            return false;
+        }
+        return map.containsKey(name);
     }
 
     /**
@@ -93,7 +97,11 @@ public interface APIResponses extends Constructible, Extensible<APIResponses>, M
      * @return the corresponding APIResponse or null.
      */
     default APIResponse getAPIResponse(String name) {
-        return getAPIResponses().get(name);
+        Map<String, APIResponse> map = getAPIResponses();
+        if (map == null) {
+            return null;
+        }
+        return map.get(name);
     }
 
     /**

@@ -76,7 +76,11 @@ public interface Callback extends Constructible, Extensible<Callback>, Reference
      * @return a boolean to indicate if the path item is present or not.
      */
     default boolean hasPathItem(String name) {
-        return getPathItems().containsKey(name);
+        Map<String, PathItem> map = getPathItems();
+        if (map == null) {
+            return false;
+        }
+        return map.containsKey(name);
     }
 
     /**
@@ -86,7 +90,11 @@ public interface Callback extends Constructible, Extensible<Callback>, Reference
      * @return the corresponding path item or null.
      */
     default PathItem getPathItem(String name) {
-        return getPathItems().get(name);
+        Map<String, PathItem> map = getPathItems();
+        if (map == null) {
+            return null;
+        }
+        return map.get(name);
     }
 
     /**

@@ -66,7 +66,11 @@ public interface ServerVariables extends Constructible, Extensible<ServerVariabl
      * @return a boolean to indicate if the server variable is present or not.
      */
     default boolean hasServerVariable(String name) {
-        return getServerVariables().containsKey(name);
+        Map<String, ServerVariable> map = getServerVariables();
+        if (map == null) {
+            return false;
+        }
+        return map.containsKey(name);
     }
 
     /**
@@ -76,7 +80,11 @@ public interface ServerVariables extends Constructible, Extensible<ServerVariabl
      * @return the corresponding server variable or null.
      */
     default ServerVariable getServerVariable(String name) {
-        return getServerVariables().get(name);
+        Map<String, ServerVariable> map = getServerVariables();
+        if (map == null) {
+            return null;
+        }
+        return map.get(name);
     }
 
     /**

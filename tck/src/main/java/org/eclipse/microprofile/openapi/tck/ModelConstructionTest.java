@@ -388,8 +388,8 @@ public class ModelConstructionTest {
         
         p.removePathItem(pathItemKey);
         assertFalse(p.hasPathItem(pathItemKey), pathItemKey + " is absent in the map");
-        assertEquals(p.size(), 1, "The map is expected to contain two entries.");
-        assertEquals(p.getPathItems().size(), 1, "The map is expected to contain two entries.");
+        assertEquals(p.size(), 1, "The map is expected to contain one entry.");
+        assertEquals(p.getPathItems().size(), 1, "The map is expected to contain one entry.");
         
         p.remove(pathItemKey2);
         assertFalse(p.hasPathItem(pathItemKey2), pathItemKey + " is absent in the map");
@@ -429,8 +429,8 @@ public class ModelConstructionTest {
         
         c.removePathItem(pathItemKey);
         assertFalse(c.hasPathItem(pathItemKey), pathItemKey + " is absent in the map");
-        assertEquals(c.size(), 1, "The map is expected to contain two entries.");
-        assertEquals(c.getPathItems().size(), 1, "The map is expected to contain two entries.");
+        assertEquals(c.size(), 1, "The map is expected to contain one entry.");
+        assertEquals(c.getPathItems().size(), 1, "The map is expected to contain one entry.");
         
         c.remove(pathItemKey2);
         assertFalse(c.hasPathItem(pathItemKey2), pathItemKey + " is absent in the map");
@@ -516,8 +516,8 @@ public class ModelConstructionTest {
         
         c.removeMediaType(mediaTypeKey);
         assertFalse(c.hasMediaType(mediaTypeKey), mediaTypeKey + " is absent in the map");
-        assertEquals(c.size(), 1, "The map is expected to contain two entries.");
-        assertEquals(c.getMediaTypes().size(), 1, "The map is expected to contain two entries.");
+        assertEquals(c.size(), 1, "The map is expected to contain one entry.");
+        assertEquals(c.getMediaTypes().size(), 1, "The map is expected to contain one entry.");
         
         c.remove(mediaTypeKey2);
         assertFalse(c.hasMediaType(mediaTypeKey2), mediaTypeKey + " is absent in the map");
@@ -713,8 +713,8 @@ public class ModelConstructionTest {
         
         responses.removeAPIResponse(responseKey);
         assertFalse(responses.hasAPIResponse(responseKey), responseKey + " is absent in the map");
-        assertEquals(responses.size(), 1, "The map is expected to contain two entries.");
-        assertEquals(responses.getAPIResponses().size(), 1, "The map is expected to contain two entries.");
+        assertEquals(responses.size(), 1, "The map is expected to contain one entry.");
+        assertEquals(responses.getAPIResponses().size(), 1, "The map is expected to contain one entry.");
         
         responses.remove(responseKey2);
         assertFalse(responses.hasAPIResponse(responseKey2), responseKey + " is absent in the map");
@@ -782,8 +782,8 @@ public class ModelConstructionTest {
         
         s.removeScope(scopeKey);
         assertFalse(s.hasScope(scopeKey), scopeKey + " is absent in the map");
-        assertEquals(s.size(), 1, "The map is expected to contain two entries.");
-        assertEquals(s.getScopes().size(), 1, "The map is expected to contain two entries.");
+        assertEquals(s.size(), 1, "The map is expected to contain one entry.");
+        assertEquals(s.getScopes().size(), 1, "The map is expected to contain one entry.");
         
         s.remove(scopeKey2);
         assertFalse(s.hasScope(scopeKey2), scopeKey + " is absent in the map");
@@ -823,8 +823,8 @@ public class ModelConstructionTest {
         
         sr.removeScheme(schemeKey);
         assertFalse(sr.hasScheme(schemeKey), schemeKey + " is absent in the map");
-        assertEquals(sr.size(), 1, "The map is expected to contain two entries.");
-        assertEquals(sr.getSchemes().size(), 1, "The map is expected to contain two entries.");
+        assertEquals(sr.size(), 1, "The map is expected to contain one entry.");
+        assertEquals(sr.getSchemes().size(), 1, "The map is expected to contain one entry.");
         
         sr.remove(schemeKey2);
         assertFalse(sr.hasScheme(schemeKey2), schemeKey + " is absent in the map");
@@ -886,8 +886,8 @@ public class ModelConstructionTest {
         
         svs.removeServerVariable(varKey);
         assertFalse(svs.hasServerVariable(varKey), varKey + " is absent in the map");
-        assertEquals(svs.size(), 1, "The map is expected to contain two entries.");
-        assertEquals(svs.getServerVariables().size(), 1, "The map is expected to contain two entries.");
+        assertEquals(svs.size(), 1, "The map is expected to contain one entry.");
+        assertEquals(svs.getServerVariables().size(), 1, "The map is expected to contain one entry.");
         
         svs.remove(varKey2);
         assertFalse(svs.hasServerVariable(varKey2), varKey + " is absent in the map");
@@ -953,14 +953,14 @@ public class ModelConstructionTest {
         e.setExtensions(newMap);
         final Map<String, Object> map2 = e.getExtensions();
         assertEquals(map2.size(), 0, "The extensions map is expected to contain no entries.");
-        assertSame(map2, newMap, "The return value of getExtensions() is expected to be the same value that was set.");
+        assertEquals(map2, newMap, "The return value of getExtensions() is expected to be the same value that was set.");
         // Check that the extension map can be replaced with the builder method and that it is returned by the getter.
         final Map<String, Object> newOtherMap = new HashMap<>();
         newOtherMap.put("x-test", 42);
         e.setExtensions(newOtherMap);
         final Map<String, Object> map3 = e.getExtensions();
         assertEquals(map3.size(), 1, "The extensions map is expected to contain one entry.");
-        assertSame(map3, newOtherMap, "The return value of getExtensions() is expected to be the same value that was set.");
+        assertEquals(map3, newOtherMap, "The return value of getExtensions() is expected to be the same value that was set.");
     }
     
     private void processReference(Reference<?> r) {
@@ -993,7 +993,7 @@ public class ModelConstructionTest {
     private void processConstructibleProperty(Constructible o, Property p, Class<?> enclosingInterface) {
         final Object value1 = getInstanceOf(p.getType(), false);
         p.invokeSetter(o, value1);
-        if (!p.isPrimitive() && !p.isCompatible(Map.class)) {
+        if (!p.isPrimitive() && !p.isCompatible(Map.class) && !p.isCompatible(List.class)) {
             assertSame(p.invokeGetter(o), value1, "The return value of the getter method for property \"" + 
                     p.getName() + "\" of interface \"" + enclosingInterface.getName() +
                     "\" is expected to be the same as the value that was set.");
@@ -1009,7 +1009,7 @@ public class ModelConstructionTest {
             assertSame(self, o, "The return value of the builder method for property \"" + 
                     p.getName() + "\" of interface \"" + enclosingInterface.getName() +
                     "\" is expected to be the same as the value that was set.");
-            if (!p.isPrimitive()) {
+            if (!p.isPrimitive() && !p.isCompatible(Map.class) && !p.isCompatible(List.class)) {
                 assertSame(p.invokeGetter(o), value2, "The return value of the getter method for property \"" + 
                         p.getName() + "\" of interface \"" + enclosingInterface.getName() +
                         "\" is expected to be the same as the value that was set.");
